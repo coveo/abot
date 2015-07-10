@@ -124,6 +124,8 @@ namespace Abot.Poco
         private HtmlDocument InitializeHtmlAgilityPackDocument()
         {
             HtmlDocument hapDoc = new HtmlDocument();
+            hapDoc.OptionFixNestedTags = true;
+
             try
             {
                 hapDoc.LoadHtml(Content.Text);
