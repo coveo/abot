@@ -1,0 +1,57 @@
+<Project ToolsVersion="3.5" DefaultTargets="PostRetrieve" InitialTargets="InitializeProperties" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="D:\DevTools\Build\Build\BuildFramework.xml"/>
+    
+    <PropertyGroup>
+      <PostBuildTarget>$(ProductBuildTarget)</PostBuildTarget>
+      <PostBuildPlatform>$(ProductBuildPlatform)</PostBuildPlatform>
+      <PostMajorVersion>$(ProductMajorVersion)</PostMajorVersion>
+      <PostMinorVersion>$(ProductMinorVersion)</PostMinorVersion>
+    </PropertyGroup>
+    
+    <Choose>
+      <When Condition="'$(PostBuildPlatform)'=='Win32'">
+        <PropertyGroup>
+          <NetFrameworkPlatformDir>Framework</NetFrameworkPlatformDir>
+        </PropertyGroup>
+      </When>
+      <When Condition="'$(PostBuildPlatform)'=='x64'">
+        <PropertyGroup>
+          <NetFrameworkPlatformDir>Framework64</NetFrameworkPlatformDir>
+        </PropertyGroup>
+      </When>
+    </Choose>
+    
+    <PropertyGroup>
+      <!-- Define RegisterDlls if it isn't -->
+      <RegisterDlls Condition="'$(RegisterDlls)' == ''">true</RegisterDlls>
+      
+      <!-- Define ProjectsExt if it isn't -->
+      <ProjectsExt Condition="'$(ProjectsExt)' == ''">D:\Projects\ext</ProjectsExt>
+    </PropertyGroup>
+    
+    <Target Name="InitializeProperties">
+      <!-- Make sure OutputPath is defined. -->
+      <Error Condition="'$(OutputPath)' == ''"
+        Text="Error: OutputPath property must be set to the path where module files have been retrieved"/>
+        
+      <!-- Make sure PostBuildTarget and PostBuildPlatform have proper values. -->
+      <Error Condition="'$(PostBuildTarget)' != 'Debug' and '$(PostBuildTarget)' != 'Release'"
+        Text="Error: PostBuildTarget has an invalid value: $(PostBuildTarget) (expected Debug or Release)"/>
+      <Error Condition="'$(PostBuildPlatform)' != 'Win32' and '$(PostBuildPlatform)' != 'x64'"
+        Text="Error: PostBuildPlatform has an invalid value: $(PostBuildPlatform) (expected Win32 or x64)"/>
+    </Target>
+    
+    <Target Name="PostRetrieve">
+      <CallTarget Targets="RegisterDllArtifacts"/>
+    </Target>
+    
+    <Target Name="RegisterDllArtifacts" Condition="$(RegisterDlls)">
+      <!-- Registering DOT Net crawler assembly is required before running unit tests -->
+      <CallTargetEx Targets="RegisterCrawlers"/>
+    </Target>
+    
+    <Target Name="RegisterCrawlers" Condition="Exists('$(OutputPath)\Coveo.CES.CustomCrawlers.dll')">
+      <!-- Call proper Regasm tool depending on current Platform -->
+      <Exec Command="regsvr32 /s &quot;$(OutputPath)\Redemption.dll&quot;"/>
+    </Target>
+</Project>

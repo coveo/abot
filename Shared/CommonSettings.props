@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <WARNING>Macros based on conditions are purposely not displayed. They must be edited with a text editor.</WARNING>
+    <CS_Configuration Condition="'$(Configuration)'=='Debug' or '$(Configuration)'=='Debug-Python2'">Debug</CS_Configuration>
+    <CS_Configuration Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release-Python2'">Release</CS_Configuration>
+    <CS_UsePython2 Condition="'$(Configuration)'=='Debug-Python2' or '$(Configuration)'=='Release-Python2'">true</CS_UsePython2>
+    <CS_RootDir>$(DL_RelRootDir)</CS_RootDir>
+    <CS_CompileIDL>CompileIDL.py -vc110_xp </CS_CompileIDL>
+    <CS_CompileRGT>CompileRGT.py -vc110_xp </CS_CompileRGT>
+    <CS_BinDir>$(CS_RootDir)Bin\$(Platform)\$(CS_Configuration)\</CS_BinDir>
+    <CS_OutDir>$(CS_RootDir)Bin\$(Platform)\$(CS_Configuration)\</CS_OutDir>
+    <CS_TmpBinDir>$(CS_RootDir)TmpBin\$(Platform)\$(Configuration)\</CS_TmpBinDir>
+    <CS_IntDir>$(CS_RootDir)Obj\$(Platform)\$(Configuration)\$(SolutionName)\$(ProjectName)\</CS_IntDir>
+    <CS_LibDir>$(CS_BinDir)lib\</CS_LibDir>
+    <CS_DebugSuffix Condition="'$(CS_Configuration)'=='Debug'">D</CS_DebugSuffix>
+    <CS_DebugSuffix Condition="'$(CS_Configuration)'=='Release'" />
+    <CS_LCDebugSuffix Condition="'$(CS_Configuration)'=='Debug'">d</CS_LCDebugSuffix>
+    <CS_LCDebugSuffix Condition="'$(CS_Configuration)'=='Release'" />
+    <CS_PlatformSuffix Condition="'$(Platform)'=='Win32'" />
+    <CS_PlatformSuffix Condition="'$(Platform)'=='x64'">x64</CS_PlatformSuffix>
+    <CS_Suffix>$(CESMajorVersion)$(CS_DebugSuffix)</CS_Suffix>
+    <Core_Suffix>$(CoreMajorVersion)$(CS_DebugSuffix)</Core_Suffix>
+    <CS_Target>$(ProjectName)$(CS_Suffix)</CS_Target>
+    <CS_ExeTargetFilename>$(CS_BinDir)$(ProjectName)$(CS_Suffix).exe</CS_ExeTargetFilename>
+    <CS_DllTargetFilename>$(CS_BinDir)$(ProjectName)$(CS_Suffix).dll</CS_DllTargetFilename>
+    <CS_TargetFilename>$(CS_BinDir)$(ProjectName)$(CS_Suffix).$(OutputType)</CS_TargetFilename>
+    <CS_DllTargetFilenameUnsuffixed>$(CS_BinDir)$(ProjectName).dll</CS_DllTargetFilenameUnsuffixed>
+    <CS_AddLibDir />
+  </PropertyGroup>
+  
+  <ImportGroup Label="PropertySheets">
+    <Import Project="Boost.props" />
+    <Import Project="TBB.props" />
+    <Import Project="ICU.props" />
+    <Import Project="CGLMem.props" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(E_PROJECTS_DIR)Shared\Build\MessageCompiler.props" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(E_PROJECTS_DIR)Shared\Build\MessageCompiler.targets" />
+  </ImportGroup>
+  
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+    <TargetName>$(CS_Target)</TargetName>
+    <LocalDebuggerCommand>$(CS_TargetFilename)</LocalDebuggerCommand>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Midl>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TypeLibraryName>$(TargetDir)$(TargetName).tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\pubhdr;..\prihdr;$(CS_RootDir)Shared;$(E_PROJECTS_DIR)Shared;..\..\dependencies\BitMagic\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level4</WarningLevel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DisableSpecificWarnings>4996;4351;4355;4127;4480</DisableSpecificWarnings>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(CS_LibDir);%(AdditionalLibraryDirectories);$(CS_AddLibDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(CS_LibDir)$(TargetName).lib</ImportLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(CS_RootDir)Shared;$(E_PROJECTS_DIR)Shared</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="WARNING">
+      <Value>$(WARNING)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_RootDir">
+      <Value>$(CS_RootDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_CompileIDL">
+      <Value>$(CS_CompileIDL)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CS_CompileRGT">
+      <Value>$(CS_CompileRGT)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CS_BinDir">
+      <Value>$(CS_BinDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_OutDir">
+      <Value>$(CS_OutDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_TmpBinDir">
+      <Value>$(CS_TmpBinDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_IntDir">
+      <Value>$(CS_IntDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_Suffix">
+      <Value>$(CS_Suffix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="Core_Suffix">
+      <Value>$(Core_Suffix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_Target">
+      <Value>$(CS_Target)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_ExeTargetFilename">
+      <Value>$(CS_ExeTargetFilename)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_DllTargetFilename">
+      <Value>$(CS_DllTargetFilename)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_DllTargetFilenameUnsuffixed">
+      <Value>$(CS_DllTargetFilenameUnsuffixed)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CS_AddLibDir">
+      <Value>$(CS_AddLibDir)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

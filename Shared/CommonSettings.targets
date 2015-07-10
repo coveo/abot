@@ -1,0 +1,13 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <NoWarn>1607,$(NoWarn)</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Do not add more paths here. Use Ivy instead. -->
+    <PowerShellPath>$(OutputPath)\System.Management.Automation.dll</PowerShellPath>
+  </PropertyGroup>
+
+</Project>
