@@ -68,7 +68,7 @@ namespace Abot.Core
         protected string GetCharsetFromBody(string body)
         {
             String charset = null;
-            
+
             if (body != null)
             {
                 //find expression from : http://stackoverflow.com/questions/3458217/how-to-use-regular-expression-to-match-the-charset-string-in-html
@@ -81,7 +81,7 @@ namespace Abot.Core
 
             return charset;
         }
-        
+
         protected Encoding GetEncoding(string charset)
         {
             Encoding e = Encoding.UTF8;
@@ -123,7 +123,7 @@ namespace Abot.Core
             return rawData;
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             // Nothing to do
         }

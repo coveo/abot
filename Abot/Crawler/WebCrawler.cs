@@ -765,7 +765,7 @@ namespace Abot.Crawler
             }
             return isRedirect;
         }
-
+        
         protected virtual void ThrowIfCancellationRequested()
         {
             if (_crawlContext.CancellationTokenSource != null && _crawlContext.CancellationTokenSource.IsCancellationRequested)
