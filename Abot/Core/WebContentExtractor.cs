@@ -123,7 +123,7 @@ namespace Abot.Core
             return rawData;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             // Nothing to do
         }
