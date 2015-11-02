@@ -200,7 +200,7 @@ namespace Abot.Crawler
                 || _crawlContext.CrawlConfiguration.MinAvailableMemoryRequiredInMb > 0)
                 _memoryManager = memoryManager ?? new MemoryManager(new CachedMemoryMonitor(new GcMemoryMonitor(), _crawlContext.CrawlConfiguration.MaxMemoryUsageCacheTimeInSeconds));
 
-            _hyperLinkParser = hyperLinkParser ?? new HapHyperLinkParser(_crawlContext.CrawlConfiguration.IsRespectMetaRobotsNoFollowEnabled, _crawlContext.CrawlConfiguration.IsRespectAnchorRelNoFollowEnabled);
+            _hyperLinkParser = hyperLinkParser ?? new HapHyperLinkParser(_crawlContext.CrawlConfiguration.IsRespectMetaRobotsNoFollowEnabled, _crawlContext.CrawlConfiguration.IsRespectAnchorRelNoFollowEnabled, null, _crawlContext.CrawlConfiguration.IsRespectUrlNamedAnchorOrHashbangEnabled);
 
             _crawlContext.Scheduler = _scheduler;
         }
@@ -767,7 +767,7 @@ namespace Abot.Crawler
             }
             return isRedirect;
         }
-        
+
         protected virtual void ThrowIfCancellationRequested()
         {
             if (_crawlContext.CancellationTokenSource != null && _crawlContext.CancellationTokenSource.IsCancellationRequested)

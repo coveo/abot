@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using log4net.Core;
 
 namespace Abot.Core
 {
@@ -103,6 +104,8 @@ namespace Abot.Core
             }
             finally
             {
+                try
+                {
                 crawledPage.HttpWebRequest = request;
                 crawledPage.RequestCompleted = DateTime.Now;
                 if (response != null)
@@ -117,10 +120,16 @@ namespace Abot.Core
                     }
                     else
                     {
-                        _logger.DebugFormat("Links on page [{0}] not crawled, [{1}]", crawledPage.Uri.AbsoluteUri, shouldDownloadContentDecision.Reason);    
+                        _logger.DebugFormat("Links on page [{0}] not crawled, [{1}]", crawledPage.Uri.AbsoluteUri, shouldDownloadContentDecision.Reason);
                     }
 
                     response.Close();//Should already be closed by _extractor but just being safe
+                }
+            }
+                catch (Exception e)
+                {
+                    _logger.DebugFormat("Error occurred finalizing requesting url [{0}]", uri.AbsoluteUri);
+                    _logger.Debug(e);
                 }
             }
 
@@ -161,7 +170,7 @@ namespace Abot.Core
 
         //            if (crawledPage.WebException != null && crawledPage.WebException.Response != null)
         //                response = (HttpWebResponse)crawledPage.WebException.Response;
-                    
+
         //            _logger.DebugFormat("Error occurred requesting url [{0}]", uri.AbsoluteUri);
         //            _logger.Debug(crawledPage.WebException);
         //        }
@@ -201,13 +210,13 @@ namespace Abot.Core
             request.UserAgent = _config.UserAgentString;
             request.Accept = "*/*";
 
-            if(_config.HttpRequestMaxAutoRedirects > 0)
+            if (_config.HttpRequestMaxAutoRedirects > 0)
                 request.MaximumAutomaticRedirections = _config.HttpRequestMaxAutoRedirects;
 
             if (_config.IsHttpRequestAutomaticDecompressionEnabled)
                 request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-            if(_config.HttpRequestTimeoutInSeconds > 0)
+            if (_config.HttpRequestTimeoutInSeconds > 0)
                 request.Timeout = _config.HttpRequestTimeoutInSeconds * 1000;
 
             if (_config.IsSendingCookiesEnabled)

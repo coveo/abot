@@ -71,7 +71,8 @@ using Abot.Poco;
       isHttpRequestAutoRedirectsEnabled="true" 
       isHttpRequestAutomaticDecompressionEnabled="false"
       isSendingCookiesEnabled="false"
-	  isSslCertificateValidationEnabled="false"
+      isSslCertificateValidationEnabled="false"
+      isRespectUrlNamedAnchorOrHashbangEnabled="false"
       minAvailableMemoryRequiredInMb="0"
       maxMemoryUsageInMb="0"
       maxMemoryUsageCacheTimeInSeconds="0"
@@ -286,7 +287,7 @@ crawler.ShouldDownloadPageContent((crawledPage, crawlContext) =>
 crawler.ShouldCrawlPageLinks((crawledPage, crawlContext) =>
 {
 	CrawlDecision decision = new CrawlDecision{ Allow = true };
-	if (crawledPage.PageSizeInBytes < 100)
+	if (crawledPage.Content.Bytes.Length < 100)
 		return new CrawlDecision { Allow = false, Reason = "Just crawl links in pages that have at least 100 bytes" };
 
 	return decision;
