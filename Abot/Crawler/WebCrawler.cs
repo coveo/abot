@@ -698,8 +698,8 @@ namespace Abot.Crawler
 
                 if (ShouldRecrawlPage(crawledPage))
                 {
-                    crawledPage.IsRetry = true;
-                    _scheduler.Add(crawledPage);
+                    pageToCrawl.IsRetry = true;
+                    _scheduler.Add(pageToCrawl);
                 }   
             }
             catch (OperationCanceledException)
