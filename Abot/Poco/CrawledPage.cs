@@ -123,7 +123,7 @@ namespace Abot.Poco
 
         private HtmlDocument InitializeHtmlAgilityPackDocument()
         {
-            HtmlDocument hapDoc = new HtmlDocument();
+            HtmlDocument hapDoc = new HtmlDocument { OptionFixNestedTags = true };
 
             try
             {
