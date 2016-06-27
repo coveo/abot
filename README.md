@@ -1,10 +1,10 @@
 #Abot [![Build Status](https://ci.appveyor.com/api/projects/status/b1ukruawvu6uujn0?svg=true)](https://ci.appveyor.com/project/sjdirect/abot)
 
+*Please star this project!!* Contact me with exciting opportunities!!
+
 ######C# web crawler built for speed and flexibility.
 
 Abot is an open source C# web crawler built for speed and flexibility. It takes care of the low level plumbing (multithreading, http requests, scheduling, link parsing, etc..). You just register for events to process the page data. You can also plugin your own implementations of core interfaces to take complete control over the crawl process. Abot targets .NET version 4.0. 
-
-*Please star this project!!*
 
 ######What's So Great About It?
   * Open Source (Free for commercial and personal use)
@@ -17,12 +17,21 @@ Abot is an open source C# web crawler built for speed and flexibility. It takes 
 
 ######Links of Interest
 
-  * [Ask questions and search for answers on the Community Forum](http://groups.google.com/group/abot-web-crawler)
-  * [Report Bugs or Suggest Features](https://github.com/sjdirect/abot/issues)
+  * [Ask a question](http://groups.google.com/group/abot-web-crawler)
+  * [Report a bug or suggest a feature](https://github.com/sjdirect/abot/issues)
   * [Learn how you can contribute](https://github.com/sjdirect/abot/wiki/Contribute)
   * [Need expert Abot customization?](https://github.com/sjdirect/abot/wiki/Custom-Development)
   * [Take the usage survey](https://www.surveymonkey.com/s/JS5826F) to help prioritize features/improvements
   * [Consider making a donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G6ZY6BZNBFVQJ)
+
+######Use [AbotX](http://abotx.org) for powerful extensions/wrappers
+
+  * [Crawl multiple sites concurrently](http://abotx.org/Learn/ParallelCrawlerEngine)
+  * [Execute/Render Javascript](http://abotx.org/Learn/JavascriptRendering)
+  * [Avoid getting blocked by sites](http://abotx.org/Learn/CrawlerX#crawlerx-pause-resume)
+  * [Pause/Resume live crawls](http://abotx.org/Learn/CrawlerX#crawlerx-pause-resume)
+  * [Schedule day/time crawl limits](http://abotx.org/Learn/Scheduler)
+  * [Automatically speed up/down based on current resource usage](http://abotx.org/Learn/ThroughputMaximizer)
 
 <br /><br />
 <hr />
@@ -88,6 +97,7 @@ using Abot.Poco;
     <politeness 
       isRespectRobotsDotTextEnabled="false"
       isRespectMetaRobotsNoFollowEnabled="false"
+	  isRespectHttpXRobotsTagHeaderNoFollowEnabled="false"
       isRespectAnchorRelNoFollowEnabled="false"
       isIgnoreRobotsDotTextIfRootDisallowedEnabled="false"
       robotsDotTextUserAgentString="abot"
@@ -258,7 +268,7 @@ The following configuration data should be added to the app.config file of the a
 
 Abot was designed to be as pluggable as possible. This allows you to easily alter the way it works to suite your needs.
 
-The easiest way to change Abot's behavior for common features is to change the config values that control them. See the [Quick Start](#quickstart) page for examples on the different ways Abot can be configured.
+The easiest way to change Abot's behavior for common features is to change the config values that control them. See the [Quick Start](#quick-start) page for examples on the different ways Abot can be configured.
 
 ####CrawlDecision Callbacks/Delegates
 Sometimes you don't want to create a class and go through the ceremony of extending a base class or implementing the interface directly. For all you lazy developers out there Abot provides a shorthand method to easily add your custom crawl decision logic. NOTE: The ICrawlDecisionMaker's corresponding method is called first and if it does not "allow" a decision, these callbacks will not be called.
@@ -295,7 +305,7 @@ crawler.ShouldCrawlPageLinks((crawledPage, crawlContext) =>
 ```
 
 ####Custom Implementations
-PoliteWebCrawler is the master of orchestrating the crawl. It's job is to coordinate all the utility classes to "crawl" a site. PoliteWebCrawler accepts an alternate implementation for all its dependencies through it's constructor.
+PoliteWebCrawler is the master of orchestrating the crawl. Its job is to coordinate all the utility classes to "crawl" a site. PoliteWebCrawler accepts an alternate implementation for all its dependencies through its constructor.
  
 ```c#
 PoliteWebCrawler crawler = new PoliteWebCrawler(
