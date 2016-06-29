@@ -1,4 +1,4 @@
-<Project ToolsVersion="3.5" DefaultTargets="Build" InitialTargets="InitializeProperties" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="3.5" DefaultTargets="Setup;Build" InitialTargets="InitializeProperties" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="D:\DevTools\Build\Build\BuildFramework.xml"/>
   
   <Import Project="$(DevBranch)\$(DevBranchDir)\Shared\Build\CommonBuild.proj"/>
@@ -6,7 +6,7 @@
   <PropertyGroup>
     <!-- Target/platform -->
     <BuildTarget>Debug</BuildTarget>
-    <BuildPlatform>x64</BuildPlatform>
+    <BuildPlatform>Any CPU</BuildPlatform>
 
     <!-- Whether to use junction points for Bin and Obj -->
     <UseJunctions>true</UseJunctions>
@@ -15,32 +15,8 @@
     <!-- The drive when the Obj junction point is created -->
     <ObjDrive>D</ObjDrive>
     
-    <!-- Fail if we can't set registry key access rights? -->
-    <SetRegistryAccessThrowOnError>true</SetRegistryAccessThrowOnError>
-
     <!-- Set to true to rebuild all projects -->
     <Rebuild>false</Rebuild>
-    <!-- Set to true to register COM objects -->
-    <RegisterDlls>true</RegisterDlls>
-    <!-- Set to true to kill processes before registering COM objects -->
-    <KillDllProcesses>false</KillDllProcesses>
-
-    <!-- Whether to create IIS web sites -->
-    <CreateWebSites>true</CreateWebSites>
-
-    <!-- Version info -->
-    <MajorVersion>7</MajorVersion>
-    <MinorVersion>1</MinorVersion>
-    <MajorVersionForCompatibility>7</MajorVersionForCompatibility>
-    <MinorVersionForCompatibility>0</MinorVersionForCompatibility>
-    <ServicePack></ServicePack>
-    <BuildNumber>0</BuildNumber>
-    <BuildRevision>0</BuildRevision>
-    <BuildDate></BuildDate>
-    <BuildTag></BuildTag>
-
-    <!-- Source control info -->
-    <BranchName>release-7.0</BranchName>
 
     <!-- Setup options -->
     <Refresh>false</Refresh>
@@ -59,23 +35,6 @@
     <MonthlyFrontEndNet></MonthlyFrontEndNet>
     <MonthlyCES></MonthlyCES>
 
-    <!-- Build options -->
-    <UnitTests>false</UnitTests>
-    <OfficialBuild>false</OfficialBuild>
-    <NewBuildNumber>0</NewBuildNumber>
-    <NewBuildRevision>0</NewBuildRevision>
-
-    <!-- Publish options -->
-    <IndexSources>false</IndexSources>
-    <Local>true</Local>
-
-    <!-- Copyright info -->
-    <Company>Coveo Solutions Inc.</Company>
-    <CompanyUrl>http://www.coveo.com</CompanyUrl>
-    <Copyright>Copyright (c) 2004-2013 , Coveo Solutions Inc.</Copyright>
-    <ProductName>Coveo Enterprise Search</ProductName>
-    <ProductNameForBuildIni>Abot</ProductNameForBuildIni>
-    <JenkinsBuildName></JenkinsBuildName>
   </PropertyGroup>
   
   <Import Project="$(DevBranch)\$(DevBranchDir)\Shared\PersonalOptions.proj"/>
@@ -84,22 +43,13 @@
     <!-- Dependent properties -->
     <BuildRoot>$(MSBuildProjectDirectory)</BuildRoot>
     <SourceRoot>$(BuildRoot)\dependencies</SourceRoot>
-    <OutputPath>$(BuildRoot)\Bin\$(BuildPlatform)\$(BuildTarget)</OutputPath>
-    <Win32OutputPath>$(BuildRoot)\Bin\Win32\$(BuildTarget)</Win32OutputPath>
+    <OutputPath>$(BuildRoot)\Bin\$(BuildTarget)</OutputPath>
     <ReportPath Condition="!$(WriteReport)"></ReportPath>
     <ReportPath Condition="$(WriteReport)">$(BuildRoot)\resolvedrevisions.xml</ReportPath>
     <ResolvedRevisionsFile Condition="!$(ReadReport)"></ResolvedRevisionsFile>
     <ResolvedRevisionsFile Condition="$(ReadReport)">$(BuildRoot)\resolvedrevisions.xml</ResolvedRevisionsFile>
     <BuildConfiguration>$(BuildTarget)|$(BuildPlatform)</BuildConfiguration>
     <BuildConfigurationWithCustomVersion>$(BuildTarget)|$(BuildPlatform)</BuildConfigurationWithCustomVersion>
-    <BuildTargetSuffix Condition="'$(BuildTarget)'=='Debug'">D</BuildTargetSuffix>
-    <BuildTargetSuffix Condition="'$(BuildTarget)'=='Release'"></BuildTargetSuffix>
-    <BuildPlatformSuffix Condition="'$(BuildPlatform)'=='Win32'"></BuildPlatformSuffix>
-    <BuildPlatformSuffix Condition="'$(BuildPlatform)'=='x64'"> x64</BuildPlatformSuffix>
-    <BinaryFileSuffix>$(MajorVersion)$(BuildTargetSuffix)</BinaryFileSuffix>
-    
-    <!-- Tells PortableCES that this module pulls CGLMem via Ivy. Do not modify. -->
-    <IvyBasedCGLMem>true</IvyBasedCGLMem>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -127,28 +77,6 @@
       <Output TaskParameter="Result" PropertyName="NewBuildRevision"/>
     </Plus>
 
-    <!-- This will ensure that we have a Build.ini file in the root directory. -->
-    <!-- That file will contain all information regarding the build number, revision and date. -->
-    <CreateBuildIni
-      WorkingDirectoryRootFolder="$(BuildRoot)"
-      DefaultIniFolder="D:\DevTools\Build"
-      ForceNewBuildNumber="true"
-      ForceNewEntry="$(ReleaseBuild)"
-      NewBuildNumber="$(NewBuildNumber)"
-      NewRevisionNumber="$(NewBuildRevision)"
-      OfficialBuild="$(OfficialBuild)"
-      MajorVersion="$(MajorVersion)"
-      MinorVersion="$(MinorVersion)"
-      ProductName="$(ProductNameForBuildIni)"
-      JenkinsBuildName="$(JenkinsBuildName)"/>
-
-    <!-- Now load back the Build.ini file and populate our properties. -->
-    <LoadBuildNumber Path="$(BuildRoot)\Build.ini">
-      <Output TaskParameter="BuildNumber" PropertyName="BuildNumber"/>
-      <Output TaskParameter="BuildRevision" PropertyName="BuildRevision"/>
-      <Output TaskParameter="BuildDate" PropertyName="BuildDate"/>
-    </LoadBuildNumber>
-    
     <!-- Get source control info -->
     <!--GetMercurialBranch>
       <Output TaskParameter="Branch" PropertyName="BranchName"/>
@@ -207,22 +135,11 @@
   <Target Name="All">
     <CallTargetEx Targets="Setup" />
     <CallTargetEx Targets="Build" />
-    <CallTargetEx Targets="Publish" />
   </Target>
 
   <Target Name="Setup" DependsOnTargets="SetupCreateJunctions">
     <!-- Retrieve dependencies with Ivy -->
     <CallTargetEx Targets="RetrieveDependencies"/>
-    
-    <!-- Generate files from template. This needs to be done after Ivy retrieval since we need dependency infos.-->
-    <CallTargetEx Targets="GenerateVersionFiles"/>
-    
-    <!-- Copy some files that are in the source to the output so we can publish them -->
-    <CallTargetEx Targets="CopyFilesToOutput"/>
-  
-    <!-- Call the PostRetrieve task to register DLLs. -->
-    <MSBuild Projects="$(OutputPath)\$(ProductNameForBuildIni)\PostRetrieve.proj" Targets="RegisterDllArtifacts" Properties="$(PostRetrieveProperties)"/>
-
   </Target>
 
   <Target Name="Build">
@@ -232,25 +149,6 @@
       Solution="$(MSBuildProjectDirectory)\Abot.sln"
       Configuration="$(BuildConfiguration)"
       Rebuild="$(Rebuild)"/>
-  </Target>
-  
-  <Target Name="Publish" DependsOnTargets="PrepareIvyFile">
-    <!-- Index the sources if necessary -->
-    <Exec Command="D:\DevTools\bin\srcsrv\hgindex.cmd" Condition="$(IndexSources)" />
-
-    <PropertyGroup>
-      <RevisionSuffix Condition="$(NewBuildRevision) == 0"></RevisionSuffix>
-      <RevisionSuffix Condition="$(NewBuildRevision) != 0">.$(NewBuildRevision)</RevisionSuffix>
-    </PropertyGroup>
-    <IvyPublish 
-      IvyFile="$(IvyFile)"
-      Patterns="[artifact].[ext]"
-      Revision="$(MajorVersion).$(MinorVersion).$(BuildNumber)$(RevisionSuffix)"
-      Local="$(Local)"
-      Official="$(IvyOfficial)"
-      Beta="$(Beta)"
-      MessageLevel="$(IvyVerbosity)"
-      Cache="$(IvyCache)" />
   </Target>
   
   <Target Name="PrepareIvyFile">
@@ -310,87 +208,6 @@
     <MSBuild Condition="$(Retrieve)"
       Projects="@(PostRetrieveBuildFiles)"
       Properties="$(PostRetrieveProperties)"/>
-
-    <!-- Extract dependency information -->
-    <CreateProperty Value="%(RetrievedRevisions.MajorVersion)" Condition="'%(RetrievedRevisions.Module)' == 'Core'">
-      <Output TaskParameter="Value" PropertyName="CoreMajorVersion"/>
-    </CreateProperty>
-    <CreateProperty Value="%(RetrievedRevisions.MinorVersion)" Condition="'%(RetrievedRevisions.Module)' == 'Core'">
-      <Output TaskParameter="Value" PropertyName="CoreMinorVersion"/>
-    </CreateProperty>
   </Target>
 
-  <Target Name="GenerateVersionFiles">
-    <ItemGroup Condition="$(Retrieve)">
-      <!-- Additional replacements. Needs to be in this target since it needs dependency info. -->
-      <DependencyReplacements Include="$(CoreMajorVersion)" >
-        <Key>CoreMajorVersion</Key>
-      </DependencyReplacements>
-      <DependencyReplacements Include="$(CoreMinorVersion)" >
-        <Key>CoreMinorVersion</Key>
-      </DependencyReplacements>
-    </ItemGroup>
-
-    <GenerateVersionFromTemplate
-      Template="$(BuildRoot)\BuildTasks\PostRetrieve.proj.template"
-      Files="$(OutputPath)\$(ProductNameForBuildIni)\PostRetrieve.proj"
-      BuildTarget="$(BuildTarget)"
-      BuildPlatform="$(BuildPlatform)"
-      ProductName="$(ProductNameForBuildIni)"
-      MajorVersion="$(MajorVersion)"
-      MinorVersion="$(MinorVersion)"
-      MajorVersionForCompatibility="$(MajorVersionForCompatibility)"
-      MinorVersionForCompatibility="$(MinorVersionForCompatibility)"
-      ServicePack="$(ServicePack)"
-      BuildNumber="$(BuildNumber)"
-      BuildRevision="$(BuildRevision)"
-      BuildDate="$(BuildDate)"
-      Company="$(Company)"
-      Copyright="$(Copyright)"
-      ValidateUnsubstituted="false"/>
-  </Target>
-
-  <Target Name="CopyFilesToOutput">
-    <!-- Copy files for UTs -->
-
-  </Target>
-
-  <!-- Files needed for the Sitecore 5.3 package -->
-  <ItemGroup>
-    <Sitecore53File Include="Coveo.CES.CustomCrawlers.Sitecore.ContentWebService.dll">
-      <Location>files/bin</Location>
-    </Sitecore53File>
-    <Sitecore53File Include="Coveo.CES.CustomCrawlers.Sitecore.Shared.dll">
-      <Location>files/bin</Location>
-    </Sitecore53File>
-    <Sitecore53File Include="Coveo.CES.CustomCrawlers.Sitecore53.dll">
-      <Location>files/bin</Location>
-    </Sitecore53File>
-    <Sitecore53File Include="Coveo.CES.CustomCrawlers.Sitecore.ContentWebService.pdb">
-      <Location>files/bin</Location>
-    </Sitecore53File>
-    <Sitecore53File Include="Coveo.CES.CustomCrawlers.Sitecore.Shared.pdb">
-      <Location>files/bin</Location>
-    </Sitecore53File>
-    <Sitecore53File Include="Coveo.CES.CustomCrawlers.Sitecore53.pdb">
-      <Location>files/bin</Location>
-    </Sitecore53File>
-    <Sitecore53File Include="CustomCrawlers\SitecoreWebService\CoveoContent.asmx">
-      <Source>$(BuildRoot)</Source>
-      <Location>files/sitecore modules/Web/Coveo/WebService</Location>
-    </Sitecore53File>
-  </ItemGroup>
-  
-  <!-- Files needed for the Sitecore 6 package -->
-  <!-- Validate the API compatibility between major versions -->
-  <PropertyGroup>
-    <ApiReferencePath>D:\DevTools\CESPublicAPI\7.0.4885</ApiReferencePath>
-    <ApiCheckExceptionFile>$(BuildRoot)\APICheckExceptions.xml</ApiCheckExceptionFile>
-    <ApiCheckErrorFile>$(OutputPath)\APICheckErrors.xml</ApiCheckErrorFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PublicAssembly Include="$(OutputPath)\Coveo.CES.CustomCrawlers.dll"/>
-    <PublicAssembly Include="$(OutputPath)\Coveo.CES.SecurityProviders.Framework.dll"/>
-  </ItemGroup>
 </Project>

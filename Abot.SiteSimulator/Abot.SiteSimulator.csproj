@@ -11,6 +11,11 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseGlobalApplicationHostFile />
     <RelRootDir>..\</RelRootDir>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <Import Project="$(RelRootDir)\Shared\CommonProperties.props" />
   <ItemGroup>
